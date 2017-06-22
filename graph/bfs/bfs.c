@@ -176,23 +176,27 @@ static void bfs(int vertex, void (*action)(int))
   int current_vertex;
 
   if (graph[vertex]) {
+    action(vertex);
     enqueue(vertex);
+    visited[vertex] = 1;
   }
 
   while ((current_vertex = dequeue()) != -1) {
-    if (visited[current_vertex])
-      continue;
-
-    action(current_vertex);
-    visited[current_vertex] = 1;
-
     current = graph[current_vertex];
     while (current) {
       if (!current->marked) {
 	if (current->vertex_a == current_vertex) {
-	  enqueue(current->vertex_b);
+	  if (!visited[current->vertex_b]) {
+	    action(current->vertex_b);
+	    enqueue(current->vertex_b);
+	    visited[current->vertex_b] = 1;
+	  }
 	} else if (current->vertex_b == current_vertex) {
-	  enqueue(current->vertex_a);
+	  if (!visited[current->vertex_a]) {
+	    action(current->vertex_a);
+	    enqueue(current->vertex_a);
+	    visited[current->vertex_a] = 1;
+	  }
 	}
 	current->marked = 1;
       }
